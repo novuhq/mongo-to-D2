@@ -1,16 +1,35 @@
-<% it.schema.forEach(function(table) { %>
+<% function printTable(db, table){ %>
+    <% const connection = [] %>
 
-<%= table.table_name %>: {
-  shape: sql_table
-  <% table.columns.forEach(function(column) { %>
-  <%= column.column_name %>: <%= column.data_type %> <% if (column.is_fk) { %>{constraint: foreign_key}<% } %> <% if (column.column_name === table.primary_key) { %>{constraint: primary_key}<% } %> 
+    <%= table %>: {
+    shape: sql_table
+    <% Object.keys(db[table]).forEach(function(column) { %>
 
-  <% }) %>
-}
+        <% if ( typeof db[table][column] === 'object' ) { %>
+            <%= column %>
+            <% connection.push(column) %>
+        <% } else { %>
+            <%= column %>: <%= db[table][column] %>
+        <% } %>
+    <% }) %>
+    }
 
-<% table.foreign_relations.forEach(function(fk) { %>
-<%= fk.table_name %>.<%= fk.column_name %> -> <%= fk.foreign_table_name %>.<%= fk.foreign_column_name %>
+    <% connection.forEach( function(val){ %>
+        <%= table %> -> <%= val %>
 
+        <% printTable(db[table], val)%>
+    <% }) %>
+
+<% } %>
+
+
+<% Object.keys(it.schema).forEach(function(database) { %>
+    <% console.log("The value of database is: " + database) %>
+
+    <%= database %>: {
+    <% Object.keys(it.schema[database]).forEach(function(table) { %>
+        <% printTable(it.schema[database], table) %>
+    <% }) %>
+    }
 <% }) %>
 
-<% }) %>
