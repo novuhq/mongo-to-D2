@@ -1,18 +1,29 @@
 <% function printTable(db, table){ %>
     <% const connection = [] %>
+    <% const relation = [] %>
 
     <%= table %>: {
     shape: sql_table
     <% Object.keys(db[table]).forEach(function(column) { %>
+        <% if ( column === 'relations') { %>
+            <% db[table][column].forEach( function(val){ %>
+                <% relation.push(val) %>
+            <% }) %>
+        <% } else if ( typeof db[table][column] === 'object' ) { %>
+            <%= column %>: Object
 
-        <% if ( typeof db[table][column] === 'object' ) { %>
-            <%= column %>
             <% connection.push(column) %>
         <% } else { %>
             <%= column %>: <%= db[table][column] %>
+
         <% } %>
     <% }) %>
     }
+
+     <% relation.forEach( function(val){ %>
+        <%= table %> -> <%= val %>
+
+     <% }) %>
 
     <% connection.forEach( function(val){ %>
         <%= table %> -> <%= val %>
