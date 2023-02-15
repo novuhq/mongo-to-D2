@@ -8,8 +8,6 @@ const template = readFileSync("./template.eta").toString();
 async function listDatabases(client){
   let databasesList = await client.db().admin().listDatabases();
 
-  console.log(databasesList.databases.length);
-
   let dbList = databasesList.databases.filter(function (val) {
     if (val.name !== "local" && val.name !== "config" && val.name !== "admin" ) {
       return val
@@ -48,6 +46,19 @@ function reduceElement(element, schema) {
           schema[key.toString()] = type + ' - ' + fieldTypeOf(element[key.toString()][0]);
         }
 
+      } else if (type === 'ObjectId' && key !== "_id" && key.endsWith("Id") && key.startsWith("_")){
+        // parse name and add to list to check if the table actually exists later
+
+        const parsedTableName = key.replace("_","").substring(0, key.length - 3)
+
+        if (schema['relations'] === undefined) {
+          schema['relations'] = []
+        }
+
+        if (! schema['relations'].includes(parsedTableName)) {
+          schema['relations'].push(parsedTableName)
+          schema['relations'].push(parsedTableName + "s")
+        }
       } else {
 
         schema[key.toString()] = type
@@ -108,6 +119,31 @@ function fieldTypeOf(thing) {
   }
 }
 
+function checkRelations(schema){
+
+  for (const db of Object.keys(schema)) {
+
+    for (const table of Object.keys(schema[db])) {
+
+      if (schema[db][table]['relations'] !== undefined) {
+        let removeList = []
+
+        for (const relation of schema[db][table]['relations']) {
+
+          if (!Object.keys(schema[db]).includes(relation)) {
+            removeList.push(relation)
+          }
+        }
+
+        for (const removeListElement of removeList) {
+          schema[db][table]['relations'].splice(schema[db][table]['relations'].indexOf(removeListElement), 1)
+        }
+
+      }// if
+    } // for
+  } // for
+}
+
 
 const args = process.argv.slice(2);
 
@@ -153,9 +189,12 @@ async function getSchema() {
       schema[database.name][collection.name] = {}
 
       reduceDocuments(samples, schema[database.name][collection.name]);
-
     }
   }
+
+  checkRelations(schema)
+
+
 
   return schema
 }

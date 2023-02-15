@@ -34,6 +34,13 @@ Here is an example of the output of this tool rendered in Terrastruct.
 $ node index "mongodb://localhost:27017"
 ```
 
+## Database Setup
+
+Do to mongo having no actual relational data in the database,
+we have to rely on naming to set up our correlation.
+For example, if we have a collection named "templates" and a document links to its id 
+then we expect the document to contain a field called "_templateId".
+
 ## Future
 
 We will look in the future to move this tool to a npm distributed cli tool for better maintainability
