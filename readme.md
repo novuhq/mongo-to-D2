@@ -1,6 +1,6 @@
 # Mongo to [D2](https://github.com/terrastruct/d2#related) (M2D2)
 
-## Maintained and supported by Novu
+## Maintained and supported by
 
 <div align="center">
   <a href="https://novu.co" target="_blank">
