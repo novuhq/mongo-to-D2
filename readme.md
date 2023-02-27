@@ -36,7 +36,7 @@ $ node index "mongodb://localhost:27017"
 
 ## Database Setup
 
-Do to mongo having no actual relational data in the database,
+Due to mongo having no actual relational data in the database,
 we have to rely on naming to set up our correlation.
 For example, if we have a collection named "templates" and a document links to its id 
 then we expect the document to contain a field called "_templateId".
@@ -45,6 +45,8 @@ then we expect the document to contain a field called "_templateId".
 
 We will look in the future to move this tool to a npm distributed cli tool for better maintainability
 and additional features.
+
+In addition, we will look to support a way to put in custom mapping so your database does not have to change to use this tool.
  
 If you wish to contribute to this tool, <a href="https://discord.novu.co">Come Join Our Discord</a> 
 and discuss with the team what you would like to do. 
