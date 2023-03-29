@@ -36,10 +36,10 @@ $ node index "mongodb://localhost:27017"
 
 ## Database Setup
 
-Due to mongo having no actual relational data in the database,
-we have to rely on naming to set up our correlation.
+Due to mongo having no actual relational data, we have to rely on the names of fields to get the correlation.
+Thus a forign reference in Mongo should be of the form "_<collection_name>Id" or "<collection_name>Id" as a field in a document.
 For example, if we have a collection named "templates" and a document links to its id 
-then we expect the document to contain a field called "_templateId".
+then we expect the document to contain a field called "_templateId" or "templateId".
 
 ## Future
 
